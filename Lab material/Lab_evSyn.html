@@ -1508,10 +1508,15 @@ evidence synthesis.</p>
 <div id="needed-packages" class="section level2" number="0.2">
 <h2><span class="header-section-number">0.2</span> Needed Packages</h2>
 <pre class="r"><code># If you want to use restriktor from github:
-if (!require(&quot;devtools&quot;)) install.packages(&quot;devtools&quot;)
-library(devtools) 
+#if (!require(&quot;devtools&quot;)) install.packages(&quot;devtools&quot;)
+#library(devtools) 
 #install_github(&quot;LeonardV/restriktor&quot;)
-library(restriktor) # for goric function
+#install_github(&quot;LeonardV/restriktor&quot;, force = TRUE)
+#
+# If you want to use restriktor from CRAN:
+if (!require(&quot;restriktor&quot;)) install.packages(&quot;restriktor&quot;)
+library(restriktor) # for evSyn and goric function
+#
 #
 if (!require(&quot;psych&quot;)) install.packages(&quot;psych&quot;)
 library(psych) # for descriptive stats</code></pre>
@@ -1650,6 +1655,7 @@ X15    5      5    1 18 10.555556  8.318811   11.0 11.062500  5.9304 -11  24    
 
 # First, we need the R object with unconstrained estimates 
 lm_fit_sesam &lt;-  lm((postnumb-prenumb) ~ site-1, data = data)
+# Note: an ANOVA can also be run with aov().
 
 # Check the names used in model:
 names(coef(lm_fit_sesam))</code></pre>
@@ -1688,7 +1694,7 @@ H1_sesam &lt;- &#39;site3 &gt; site4; site2 &gt; site1; site2 &gt; site5; site2 
 set.seed(123) # Set seed value
 output &lt;- goric(lm_fit_sesam, hypotheses = list(H1_sesam = H1_sesam), comparison = &#39;complement&#39;)
 output</code></pre>
-<pre><code>restriktor (0.5-10): generalized order-restricted information criterion: 
+<pre><code>restriktor (0.5-20): generalized order-restricted information criterion: 
 
 Results:
         model    loglik  penalty     goric  loglik.weights  penalty.weights  goric.weights
@@ -1713,14 +1719,15 @@ evidence from two studies</h1>
 <p><em>Intro</em></p>
 <p>In this exercise, we make use of two studies investigating the same
 phenomenon, the anchoring effect. People can be influenced by the prior
-consideration of a numerical anchor when forming numerical judgments.
-The anchor provides an initial starting point from which estimates are
-adjusted, and a large body of research demonstrates that adjustment is
-usually insufficient, leading estimates to be biased towards the initial
-anchor.</p>
+consideration of a numerical anchor when forming numerical judgments,
+such as providing a score in a diving contest or guessing a price of a
+car. The anchor provides an initial starting point from which estimates
+are adjusted, and a large body of research demonstrates that adjustment
+is usually insufficient, leading estimates to be biased towards the
+initial anchor.</p>
 <p>The initial study by Janiszewski and Uy (2008) first investigated the
 anchoring effect, while Chandler (2015) replicated the study. Our goal
-is to aggregate the evidence from these two studies (after obtaing the
+is to aggregate the evidence from these two studies (after obtaining the
 evidence for the central theory per study).</p>
 <hr />
 <p><em>References:</em> - Janiszewski, C., &amp; Uy, D. (2008).
@@ -1739,11 +1746,10 @@ persons differs from an anchor number expressed by means of a
 z-score’.</li>
 <li>One factor is ‘is the anchor number rounded (e.g., 5000) or precise
 (e.g., 4989)’.</li>
-<li>The other factor is ‘is there a low (in the instruction it is
-indicated that the number the persons have to give is close to the
-anchor number) or high (in the instruction it is not indicated that the
-number the persons have to give is close to the anchor number)
-motivation to change’.</li>
+<li>The other factor is ‘is there a low or high motivation to change’;
+where low indicates that the number the persons have to give is close to
+the anchor number, while high indicates that the number the persons have
+to give is distant to the anchor number.</li>
 <li>In the data files, the dependent variable is denoted by <span class="math inline">\(z\)</span>, the groups by <span class="math inline">\(g\)</span>, and the four groups are labelled <span class="math inline">\(rl\)</span> (rounded, low), <span class="math inline">\(rh\)</span> (rounded, high), <span class="math inline">\(pl\)</span> (precise low), and <span class="math inline">\(ph\)</span> (precise high).</li>
 </ul>
 <p>The <span class="math inline">\(z\)</span>-score is the average of a
@@ -1775,12 +1781,12 @@ Exercise 1.</p>
 <p> </p>
 <details>
 <summary>
-<b>Click to show which informative hypothesis is used in the answers</b>
+<b>Click to show which informative hypotheses is used in the answers</b>
 </summary>
 <p>The informative hypotheses used in the answer are:<br />
 <span class="math inline">\(\mu_{rh} &gt; \mu_{ph} &gt; \mu_{rl} &gt;
 \mu_{pl}\)</span> and<br />
-<span class="math inline">\(\mu_{rh} &gt; \mu_{ph} &gt; \mu_{rl} &gt;
+<span class="math inline">\(\mu_{rh} &gt; \mu_{ph} = \mu_{rl} &gt;
 \mu_{pl}\)</span>. These hypothesis are evaluated against the
 unconstrained, just to make sure that not a weak hypothesis is chosen as
 the best.</p>
@@ -1855,7 +1861,7 @@ H2_JU &lt;- &#39;grh &gt; gph = grl &gt; gpl&#39;
 set.seed(123) # Set seed value
 goric_JU &lt;- goric(lm_fit_JU, hypotheses = list(H1_JU = H1_JU, H2_JU = H2_JU))
 goric_JU</code></pre>
-<pre><code>restriktor (0.5-10): generalized order-restricted information criterion: 
+<pre><code>restriktor (0.5-20): generalized order-restricted information criterion: 
 
 Results:
            model   loglik  penalty   goric  loglik.weights  penalty.weights  goric.weights
@@ -1927,7 +1933,7 @@ H2_C &lt;- &#39;grh &gt; gph = grl &gt; gpl&#39;
 set.seed(123) # Set seed value
 goric_C &lt;- goric(lm_fit_C, hypotheses = list(H1_C = H1_C, H2_C = H2_C))
 goric_C</code></pre>
-<pre><code>restriktor (0.5-10): generalized order-restricted information criterion: 
+<pre><code>restriktor (0.5-20): generalized order-restricted information criterion: 
 
 Results:
            model   loglik  penalty    goric  loglik.weights  penalty.weights  goric.weights
@@ -1951,8 +1957,8 @@ Results:
 <div id="exercise-2c" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Exercise 2c</h2>
 <p>In Exercises 2a and 2b, you found the study-specific support for the
-central theory. In this exercise, you will aggregate this, using the
-evSyn function.</p>
+central theory. In this exercise, you will aggregate this using the
+<code>evSyn()</code> function.</p>
 <details>
 <summary>
 <b>Click to show answers</b>
@@ -1964,7 +1970,7 @@ GORIC_studies &lt;- list(goric_JU$result[,4], goric_C$result[,4])
 evSyn_anchor &lt;- evSyn(GORIC_studies, hypo_names = goric_JU$result[,1])
 
 evSyn_anchor</code></pre>
-<pre><code>restriktor (0.5-10): added Evidence Synthesis results:
+<pre><code>restriktor (0.5-20): added Evidence Synthesis results:
 
 Final GORICA weights:
         H1_JU          H2_JU  unconstrained  
@@ -1977,7 +1983,8 @@ H1_JU              1.000   9.68e+03             45.947
 H2_JU           1.03e-04      1.000              0.005
 unconstrained      0.022    210.614              1.000</code></pre>
 <pre><code></code></pre>
-<pre class="r"><code>#plot(evSyn_anchor)</code></pre>
+<pre class="r"><code>#summary(evSyn_anchor)
+#plot(evSyn_anchor)</code></pre>
 </details>
 <p> </p>
 <hr />
@@ -1987,9 +1994,10 @@ unconstrained      0.022    210.614              1.000</code></pre>
 <h1><span class="header-section-number">3</span> Exercise 3: Aggregating
 evidence from two studies</h1>
 <p><em>Intro</em><br />
-- Imagine that you are in a group (all the others in the group are
-actors) and that the atmosphere in the group is that criminal behavior
-is linked to having an African American background.<br />
+- Imagine that you are in a group (unbeknownst to you, all the others in
+the group are actors) and that the atmosphere in the group is that
+criminal behavior is linked to having an African American
+background.<br />
 - You publicly have to rate your attraction to a person in a
 video.<br />
 - This is repeated using the same group of actors with you replaced by
@@ -2076,7 +2084,6 @@ Hypo_studies &lt;- list(S1 = list(H11, H12), S2 = list(H21, H22))
 Safeguard &lt;- &quot;unconstrained&quot;
 #Hypo_studies &lt;- list(H1 = list(H12, H22))
 #Safeguard &lt;- &quot;complement&quot;
-## TO DO
 
 # Evidence synthesis
 evSyn_params &lt;- evSyn(Param_studies, VCOV = CovMx_studies, 
@@ -2086,7 +2093,7 @@ evSyn_params &lt;- evSyn(Param_studies, VCOV = CovMx_studies,
 #
 #evSyn_params
 summary(evSyn_params)</code></pre>
-<pre><code>restriktor (0.5-10): added Evidence Synthesis results:
+<pre><code>restriktor (0.5-20): added Evidence Synthesis results:
 
 Study-specific results:
 
@@ -2100,6 +2107,12 @@ Study-specific results:
                H1    H2 Unconstrained
     Study 1 4.492 4.108         6.478
     Study 2 5.770 6.377         4.942
+    ---
+
+    Log-likelihood weights:
+               H1    H2 Unconstrained
+    Study 1 0.231 0.384         0.384
+    Study 2 0.114 0.114         0.772
     ---
 
     Log-likelihood values:
@@ -2128,6 +2141,12 @@ Cumulative results:
     Studies 1-2 10.262 10.485        11.420
     ---
 
+    Log-likelihood weights:
+                   H1    H2 Unconstrained
+    Studies 1   0.231 0.384         0.384
+    Studies 1-2 0.072 0.119         0.809
+    ---
+
     Log-likelihood values:
                     H1     H2 Unconstrained
     Studies 1   -0.746 -0.239        -0.239
@@ -2141,11 +2160,12 @@ Cumulative results:
     ---
 
 Final results:
-                              H1     H2 Unconstrained
-    GORICA weights         0.407  0.364         0.228
-    GORICA values         10.262 10.485        11.420
-    Log-likelihood values -2.131 -1.624         0.290
-    Penalty term values    3.000  3.618         6.000
+                               H1     H2 Unconstrained
+    GORICA weights          0.407  0.364         0.228
+    GORICA values          10.262 10.485        11.420
+    Log-likelihood weights  0.072  0.119         0.809
+    Log-likelihood values  -2.131 -1.624         0.290
+    Penalty term values     3.000  3.618         6.000
 
 Final ratios:
 
@@ -2156,11 +2176,11 @@ Final ratios:
     Unconstrained  0.560  0.627             1.000
     ---
 
-    Log-likelihood values:
+    Log-likelihood weights:
                   vs. H1 vs. H2 vs. Unconstrained
-    H1             1.000  1.312            -7.347
-    H2             0.762  1.000            -5.600
-    Unconstrained -0.136 -0.179             1.000
+    H1             1.000  0.602             0.089
+    H2             1.660  1.000             0.147
+    Unconstrained 11.257  6.782             1.000
     ---</code></pre>
 <pre><code></code></pre>
 <pre class="r"><code>#plot(evSyn_params)</code></pre>
@@ -2169,7 +2189,7 @@ studies do not prefer the same hypothesis (i.e., the result in the first
 study is not replicated by the second).</p>
 <p>When aggregating this mixed results, we find that there is support
 for both <span class="math inline">\(H_1\)</span> and <span class="math inline">\(H_2\)</span>. Since <span class="math inline">\(H_1\)</span> is a special case / a subset of <span class="math inline">\(H_2\)</span>, this reflects support for <span class="math inline">\(H_1\)</span>. One could, now, decide to evaluate
-<span class="math inline">\(H_1\)</span> versus its complement,</p>
+<span class="math inline">\(H_1\)</span> versus its complement.</p>
 </details>
 <p> </p>
 <hr />
@@ -2272,7 +2292,7 @@ evSyn_trust &lt;- evSyn(object = Param_studies, VCOV = CovMx_studies,
                           comparison = safeguard)
 
 evSyn_trust</code></pre>
-<pre><code>restriktor (0.5-10): added Evidence Synthesis results:
+<pre><code>restriktor (0.5-20): added Evidence Synthesis results:
 
 Final GORICA weights:
    H1     H2     H3  
@@ -2299,26 +2319,27 @@ files (including a tutorial).</p>
 <hr />
 </div>
 </div>
-<div id="exercise-4-aggregating-evidence-from-studies-using-different-subpopulations" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Exercise 4: Aggregating
+<div id="exercise-5-aggregating-evidence-from-studies-using-different-subpopulations" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Exercise 5: Aggregating
 evidence from studies using different subpopulations</h1>
-<p>Check and run the files in the subfolder
-<code>Example corona GGD&#39; in</code>Examples evSyn’ on <a href="https://github.com/rebeccakuiper/Tutorials" class="uri">https://github.com/rebeccakuiper/Tutorials</a>.</p>
+<p>Donwload and run the files in the subfolder
+<code>Example corona GGD&#39; in</code>Examples evSyn’ on <a href="https://github.com/rebeccakuiper/Tutorials" class="uri">https://github.com/rebeccakuiper/Tutorials</a>.
+<!-- /Examples\%20evSyn -- TO DO href{}{} ms download fie? --></p>
 <hr />
 </div>
-<div id="exercise-4-aggregating-evidence-from-many-heterogenous-and-homogenuous-studies" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Exercise 4: Aggregating
+<div id="exercise-6-aggregating-evidence-from-many-heterogenous-and-homogenuous-studies" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Exercise 6: Aggregating
 evidence from many heterogenous and homogenuous studies</h1>
-<p>Check and run the files in the subfolder
+<p>Download and run the files in the subfolder
 <code>Example WtC&#39; in</code>Examples evSyn’ on <a href="https://github.com/rebeccakuiper/Tutorials" class="uri">https://github.com/rebeccakuiper/Tutorials</a>.</p>
 <hr />
 </div>
-<div id="exercise-5-work-on-your-own-data-optional" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Exercise 5: Work on
+<div id="exercise-7-work-on-your-own-data-optional" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Exercise 7: Work on
 your own data (Optional)</h1>
 <p>In case you have multiple data sets or multiple primary studies
 investigating the same central theory, perform GORIC(A) evidence
-synthesis to quanity the overall support.</p>
+synthesis to quantify the overall support.</p>
 </div>
 
 
